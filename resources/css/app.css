@@ -1,0 +1,48 @@
+@import 'tailwindcss';
+
+@source '../../resources/views/**/*.blade.php';
+@source '../views/**/*.blade.php';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    --color-navy-950: #060e1c;
+    --color-navy-900: #0a192f;
+    --color-navy-850: #0d213f;
+    --color-navy-800: #112a52;
+    --color-navy-700: #1a3c73;
+    --color-navy-600: #23529d;
+
+    --color-royal-900: #1e3a8a;
+    --color-royal-700: #1d4ed8;
+    --color-royal-600: #2563eb;
+    --color-royal-500: #3b82f6;
+
+    --color-yellow-500: #eab308;
+    --color-yellow-400: #facc15;
+    --color-yellow-300: #fde047;
+
+    --color-champagne-200: #f5efe6;
+    --color-champagne-300: #eadfc9;
+    --color-champagne-400: #decbaf;
+    --color-champagne-500: #caa778;
+
+    --color-charcoal-900: #111827;
+    --color-charcoal-800: #1f2937;
+    --color-charcoal-700: #374151;
+    --color-charcoal-600: #4b5563;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: var(--font-sans);
+        color: #1f2937;
+        background-color: #ffffff;
+    }
+}
