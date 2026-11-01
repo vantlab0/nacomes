@@ -22,6 +22,57 @@
     <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="space-y-8">
         @csrf
 
+        <!-- SECTION 0: Student Registration -->
+        @php
+            $registrationOpen = \App\Models\Setting::registrationIsOpen();
+        @endphp
+        <div class="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <h3 class="text-base font-bold text-navy-950">Student Registration</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Control whether new students can create an account and register for departmental elections.</p>
+                </div>
+                <div>
+                    @if ($registrationOpen)
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            OPEN
+                        </span>
+                    @else
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200 font-mono">
+                            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                            CLOSED
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <div class="flex items-start gap-3 p-4 rounded-lg border border-slate-200 bg-slate-50/50">
+                    <input type="hidden" name="registration_open" value="0">
+                    <input
+                        type="checkbox"
+                        id="registration_open"
+                        name="registration_open"
+                        value="1"
+                        {{ old('registration_open', $registrationOpen ? '1' : '0') === '1' ? 'checked' : '' }}
+                        class="mt-0.5 rounded border-slate-300 text-navy-950 focus:ring-navy-900 cursor-pointer"
+                    >
+                    <div>
+                        <label for="registration_open" class="text-xs font-bold text-navy-950 cursor-pointer">
+                            Allow new student registrations
+                        </label>
+                        <p class="text-[11px] text-slate-500 mt-0.5">
+                            When unchecked, the public Register page is disabled and blocked; existing students can still log in and vote.
+                        </p>
+                    </div>
+                </div>
+                @error('registration_open')
+                    <p class="text-xs text-red-600 font-medium">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
+
         <!-- SECTION 1: Portal Branding (Logo & Favicon) -->
         <div class="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
             <div class="p-6 border-b border-slate-100">

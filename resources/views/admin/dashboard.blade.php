@@ -55,15 +55,33 @@
     </div>
 
     <!-- Quick Actions Banner -->
-    <div class="bg-navy-950 text-white rounded-xl p-6 border border-navy-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-            <h2 class="text-base font-bold text-white">Active Election: {{ $election ? $election->title : 'NACOMES Elections' }}</h2>
-            <p class="text-xs text-slate-300 mt-0.5">
+    @php
+        $regIsOpen = \App\Models\Setting::registrationIsOpen();
+    @endphp
+    <div class="bg-navy-950 text-white rounded-xl p-6 border border-navy-800 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-2.5">
+                <h2 class="text-base font-bold text-white">Active Election: {{ $election ? $election->title : 'NACOMES Elections' }}</h2>
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-bold font-mono uppercase {{ $regIsOpen ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ $regIsOpen ? 'bg-emerald-400' : 'bg-red-400' }}"></span>
+                    Registration: {{ $regIsOpen ? 'OPEN' : 'CLOSED' }}
+                </span>
+            </div>
+            <p class="text-xs text-slate-300">
                 Public Results: <strong class="text-emerald-400 font-mono">Live Poll Progress Displayed</strong>
             </p>
         </div>
 
         <div class="flex flex-wrap items-center gap-3">
+            <form method="POST" action="{{ route('admin.registration.toggle') }}" class="inline">
+                @csrf
+                <button
+                    type="submit"
+                    class="px-4 py-2.5 rounded-lg text-xs font-bold transition shadow-xs cursor-pointer {{ $regIsOpen ? 'bg-navy-900 hover:bg-navy-850 text-red-300 hover:text-red-200 border border-red-500/40' : 'bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500' }}"
+                >
+                    {{ $regIsOpen ? 'Close Registration' : 'Open Registration' }}
+                </button>
+            </form>
             <a href="{{ route('admin.positions.index') }}" class="px-4 py-2.5 rounded-lg text-xs font-bold text-navy-950 bg-yellow-400 hover:bg-yellow-300 border border-yellow-400 transition shadow-xs">
                 + Add Candidate
             </a>

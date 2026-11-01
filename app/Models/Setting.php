@@ -47,4 +47,20 @@ class Setting extends Model
             return [];
         }
     }
+
+    /**
+     * Whether student registration is currently open.
+     */
+    public static function registrationIsOpen(): bool
+    {
+        return static::get('registration_open', '1') === '1';
+    }
+
+    /**
+     * Open or close student registration.
+     */
+    public static function setRegistrationOpen(bool $open): void
+    {
+        static::set('registration_open', $open ? '1' : '0');
+    }
 }
