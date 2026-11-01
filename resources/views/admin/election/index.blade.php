@@ -36,7 +36,26 @@
             </div>
 
             <!-- Quick Action Buttons -->
+            @php
+                $regIsOpen = \App\Models\Setting::registrationIsOpen();
+            @endphp
             <div class="flex flex-wrap items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold font-mono uppercase {{ $regIsOpen ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30' }}">
+                        <span class="w-1.5 h-1.5 rounded-full {{ $regIsOpen ? 'bg-emerald-400' : 'bg-red-400' }}"></span>
+                        Registration: {{ $regIsOpen ? 'OPEN' : 'CLOSED' }}
+                    </span>
+                    <form method="POST" action="{{ route('admin.registration.toggle') }}" class="inline">
+                        @csrf
+                        <button
+                            type="submit"
+                            class="px-4 py-2.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-xs {{ $regIsOpen ? 'bg-navy-900 hover:bg-navy-850 text-red-300 hover:text-red-200 border border-red-500/40' : 'bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500' }}"
+                        >
+                            {{ $regIsOpen ? 'Close Registration' : 'Open Registration' }}
+                        </button>
+                    </form>
+                </div>
+
                 <button 
                     type="button" 
                     data-modal-open="status-modal"

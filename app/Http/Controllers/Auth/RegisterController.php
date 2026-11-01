@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\View\View;
@@ -15,8 +16,12 @@ class RegisterController extends Controller
     /**
      * Display the student registration view.
      */
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
+        if (! Setting::registrationIsOpen()) {
+            return redirect()->route('home')->with('error', 'Student registration is currently closed. Please check back later.');
+        }
+
         return view('auth.register');
     }
 
@@ -25,6 +30,10 @@ class RegisterController extends Controller
      */
     public function store(RegisterRequest $request): RedirectResponse
     {
+        if (! Setting::registrationIsOpen()) {
+            return redirect()->route('home')->with('error', 'Student registration is currently closed.');
+        }
+
         $validated = $request->validated();
 
         $user = User::create([

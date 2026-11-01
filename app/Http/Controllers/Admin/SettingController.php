@@ -33,6 +33,7 @@ class SettingController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $validated = $request->validate([
+            'registration_open' => ['nullable', 'boolean'],
             'site_logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:3072'],
             'site_icon' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp,ico', 'max:1024'],
             'remove_site_logo' => ['nullable', 'boolean'],
@@ -99,6 +100,22 @@ class SettingController extends Controller
             Setting::set('mail_password', null);
         }
 
+        // 4. Handle Student Registration Toggle
+        $oldRegistrationOpen = Setting::registrationIsOpen();
+        $newRegistrationOpen = $request->boolean('registration_open');
+        Setting::setRegistrationOpen($newRegistrationOpen);
+
+        if ($oldRegistrationOpen !== $newRegistrationOpen) {
+            AuditLog::record(
+                $newRegistrationOpen ? 'registration_opened' : 'registration_closed',
+                $newRegistrationOpen
+                    ? 'Opened student registration.'
+                    : 'Closed student registration.',
+                $request->user()?->id,
+                $request->ip()
+            );
+        }
+
         AuditLog::record(
             'update_settings',
             'Updated portal branding and SMTP email configuration.',
@@ -107,6 +124,30 @@ class SettingController extends Controller
         );
 
         return back()->with('status', 'Portal settings have been updated successfully.');
+    }
+
+    /**
+     * Quick toggle student registration status.
+     */
+    public function toggleRegistration(Request $request): RedirectResponse
+    {
+        $currentlyOpen = Setting::registrationIsOpen();
+        Setting::setRegistrationOpen(! $currentlyOpen);
+
+        AuditLog::record(
+            $currentlyOpen ? 'registration_closed' : 'registration_opened',
+            $currentlyOpen
+                ? 'Closed student registration.'
+                : 'Opened student registration.',
+            $request->user()?->id,
+            $request->ip()
+        );
+
+        $message = $currentlyOpen
+            ? 'Student registration has been closed.'
+            : 'Student registration has been opened.';
+
+        return back()->with('status', $message);
     }
 
     /**

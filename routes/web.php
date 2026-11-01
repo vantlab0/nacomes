@@ -120,5 +120,6 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
         Route::get('/settings', SettingController::class.'@index')->name('settings.index');
         Route::post('/settings', SettingController::class.'@update')->name('settings.update');
         Route::post('/settings/test-email', SettingController::class.'@testEmail')->name('settings.test-email');
+        Route::post('/registration/toggle', [SettingController::class, 'toggleRegistration'])->name('registration.toggle');
     });
 });

@@ -14,6 +14,7 @@
     @php
         $siteIcon = \App\Models\Setting::get('site_icon');
         $siteLogo = \App\Models\Setting::get('site_logo');
+        $registrationOpen = \App\Models\Setting::registrationIsOpen();
     @endphp
     @if ($siteIcon && \Illuminate\Support\Facades\Storage::disk('public')->exists($siteIcon))
         <link rel="icon" href="{{ asset('storage/' . $siteIcon) }}">
@@ -73,9 +74,11 @@
                         Election Information
                     </a>
                     @guest
-                        <a href="{{ route('register') }}" class="text-slate-300 hover:text-yellow-400 transition-colors py-2 border-b-2 {{ request()->routeIs('register') ? 'border-yellow-400 text-yellow-400' : 'border-transparent' }}">
-                            Register
-                        </a>
+                        @if ($registrationOpen)
+                            <a href="{{ route('register') }}" class="text-slate-300 hover:text-yellow-400 transition-colors py-2 border-b-2 {{ request()->routeIs('register') ? 'border-yellow-400 text-yellow-400' : 'border-transparent' }}">
+                                Register
+                            </a>
+                        @endif
                         <a href="{{ route('login') }}" class="text-slate-300 hover:text-yellow-400 transition-colors py-2 border-b-2 {{ request()->routeIs('login') ? 'border-yellow-400 text-yellow-400' : 'border-transparent' }}">
                             Login
                         </a>
@@ -148,9 +151,11 @@
                     Election Information
                 </a>
                 @guest
-                    <a href="{{ route('register') }}" class="px-3 py-2.5 rounded-md text-base font-medium {{ request()->routeIs('register') ? 'bg-navy-900 text-yellow-400' : 'text-slate-200 hover:bg-navy-900 hover:text-white' }}">
-                        Register
-                    </a>
+                    @if ($registrationOpen)
+                        <a href="{{ route('register') }}" class="px-3 py-2.5 rounded-md text-base font-medium {{ request()->routeIs('register') ? 'bg-navy-900 text-yellow-400' : 'text-slate-200 hover:bg-navy-900 hover:text-white' }}">
+                            Register
+                        </a>
+                    @endif
                     <a href="{{ route('login') }}" class="px-3 py-2.5 rounded-md text-base font-medium {{ request()->routeIs('login') ? 'bg-navy-900 text-yellow-400' : 'text-slate-200 hover:bg-navy-900 hover:text-white' }}">
                         Login
                     </a>
@@ -189,6 +194,28 @@
 
     <!-- Page Content -->
     <main id="main-content" class="flex-1">
+        @if (session('error'))
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+                <div class="p-4 rounded-lg bg-red-50 border border-red-200 text-sm text-red-900 flex items-start gap-3 shadow-2xs" role="alert">
+                    <svg class="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span class="font-medium">{{ session('error') }}</span>
+                </div>
+            </div>
+        @endif
+
+        @if (session('status'))
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+                <div class="p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-sm text-emerald-900 flex items-start gap-3 shadow-2xs" role="status">
+                    <svg class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span class="font-medium">{{ session('status') }}</span>
+                </div>
+            </div>
+        @endif
+
         @yield('content')
     </main>
 
